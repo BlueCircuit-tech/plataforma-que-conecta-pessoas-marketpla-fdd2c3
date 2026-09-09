@@ -963,6 +963,199 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="mb-2 flex items-center gap-2">
         <svg width="28" height="28"><defs><linearGradient id="estrelaAva" x1="0" y1="0" x2="20" y2="20"><stop stop-color="#D4AF37"/><stop offset="1" stop-color="#F7EBB8"/></linearGradient></defs><path fill="url(#estrelaAva)" d="M14 4.5l2.4 4.8 5.3.8-3.8 3.9.9 5.5-4.8-2.8-4.8 2.8.9-5
 
+    <section data-tela="carrinho" class="hidden">
+  <div class="px-4 pt-2 pb-4 min-h-screen flex flex-col">
+    <!-- Cabeçalho da tela -->
+    <div class="mb-4">
+      <h1 class="font-display text-2xl font-bold text-gray-900 tracking-tight">Meu Carrinho</h1>
+      <p class="text-sm text-gray-500 mt-0.5 font-body" id="carrinho-subtitulo">3 itens selecionados</p>
+    </div>
+
+    <!-- Lista de itens -->
+    <div id="carrinho-lista" class="flex-1 space-y-3 overflow-y-auto pb-44"></div>
+
+    <!-- Código promocional -->
+    <div class="mt-4">
+      <div class="flex gap-2">
+        <div class="flex-1 relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5a1.99 1.99 0 011.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z"/></svg>
+          <input id="cupom-input" type="text" placeholder="Cupom de desconto" class="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-body text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all" />
+        </div>
+        <button onclick="carrinho_aplicarCupom()" class="px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl active:scale-95 transition-all hover:bg-gray-800 font-body">Aplicar</button>
+      </div>
+      <p id="cupom-msg" class="text-xs mt-1.5 hidden font-body"></p>
+    </div>
+  </div>
+
+  <!-- Rodapé fixo com resumo -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] z-50" style="max-width:430px;margin:0 auto;">
+    <div class="px-4 py-3">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs text-gray-500 font-body">Subtotal</span>
+        <span class="text-sm font-medium text-gray-700 font-body" id="resumo-subtotal">R$ 0,00</span>
+      </div>
+      <div id="resumo-desconto-linha" class="hidden flex items-center justify-between mb-2">
+        <span class="text-xs text-green-600 font-body">Desconto</span>
+        <span class="text-sm font-medium text-green-600 font-body" id="resumo-desconto">-R$ 0,00</span>
+      </div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-xs text-gray-500 font-body">Total (<span id="resumo-qtd">0</span> itens)</span>
+        <span class="text-xl font-bold font-display text-yellow-600" id="resumo-total">R$ 0,00</span>
+      </div>
+      <button onclick="carrinho_continuarPagamento()" class="w-full py-3.5 bg-yellow-600 text-white font-display font-bold text-base rounded-2xl active:scale-95 transition-all hover:bg-yellow-700 shadow-lg shadow-yellow-200 flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Continuar para Pagamento
+      </button>
+      <button onclick="mostrarTela('explorar')" class="w-full py-2.5 mt-1.5 text-sm text-gray-500 font-body hover:text-gray-700 transition-colors text-center">
+        ← Continuar Comprando
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const CORES_AVATAR = ['bg-yellow-100 text-yellow-700','bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-rose-100 text-rose-700','bg-purple-100 text-purple-700','bg-orange-100 text-orange-700','bg-teal-100 text-teal-700','bg-indigo-100 text-indigo-700'];
+
+  let carrinho = [
+    {id:1, nome:'Bíblia Sagrada NVI', preco:89.90, qtd:1, ini:'BN', cor:0, cat:'livros'},
+    {id:2, nome:'Colar Cruz de Ouro 18k', preco:249.90, qtd:2, ini:'CO', cor:1, cat:'acessorios'},
+    {id:3, nome:'Camiseta Gospel "Fé"', preco:59.90, qtd:1, ini:'CG', cor:2, cat:'vestuario'},
+    {id:4, nome:'Caderno de Oração Ilustrado', preco:34.90, qtd:3, ini:'CI', cor:3, cat:'papelaria'},
+    {id:5, nome:'Quadro Decorativo Salmo 23', preco:120.00, qtd:1, ini:'QS', cor:4, cat:'decoracao'},
+    {id:6, nome:'Kit Canetas Evangélicas', preco:19.90, qtd:2, ini:'KE', cor:5, cat:'papelaria'},
+  ];
+  let desconto = 0;
+
+  window.carrinho_render = function(){
+    const lista = document.getElementById('carrinho-lista');
+    const subEl = document.getElementById('carrinho-subtitulo');
+    const totalItens = carrinho.reduce((a,i)=>a+i.qtd,0);
+    if(subEl) subEl.textContent = totalItens + ' iten' + (totalItens!==1?'s':'') + ' selecionado' + (totalItens!==1?'s':'');
+    if(carrinho.length===0){
+      lista.innerHTML = `<div class="flex flex-col items-center justify-center py-16 text-center">
+        <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
+        </div>
+        <p class="text-gray-500 font-body text-sm mb-1">Seu carrinho está vazio</p>
+        <p class="text-gray-400 font-body text-xs mb-4">Explore nossos produtos e adicione itens</p>
+        <button onclick="mostrarTela('explorar')" class="px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl active:scale-95 transition-all font-body">Explorar Produtos</button>
+      </div>`;
+    } else {
+      lista.innerHTML = carrinho.map((item,idx)=>{
+        const subtotal = item.preco * item.qtd;
+        return `<div class="card bg-white rounded-2xl p-3 flex gap-3 items-center relative group" style="animation:fadeSlideUp .3s ease-out ${idx*0.05}s both;">
+          <div class="w-16 h-16 rounded-xl ${CORES_AVATAR[item.cor]} flex items-center justify-center font-display font-bold text-lg flex-shrink-0">${item.ini}</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display font-semibold text-sm text-gray-900 truncate">${item.nome}</h3>
+            <p class="text-xs text-gray-400 font-body mt-0.5">Unitário: ${brl(item.preco)}</p>
+            <div class="flex items-center gap-3 mt-2">
+              <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                <button onclick="carrinho_mudarQtd(${item.id},-1)" class="w-7 h-7 flex items-center justify-center bg-gray-50 hover:bg-gray-100 active:scale-90 transition-all text-gray-600 font-body text-base font-bold">−</button>
+                <span class="w-8 h-7 flex items-center justify-center text-sm font-body font-semibold text-gray-900 bg-white">${item.qtd}</span>
+                <button onclick="carrinho_mudarQtd(${item.id},1)" class="w-7 h-7 flex items-center justify-center bg-gray-50 hover:bg-gray-100 active:scale-90 transition-all text-gray-600 font-body text-base font-bold">+</button>
+              </div>
+              <span class="font-display font-bold text-sm text-gray-900">${brl(subtotal)}</span>
+            </div>
+          </div>
+          <button onclick="carrinho_remover(${item.id})" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 active:scale-90 transition-all text-gray-300 hover:text-red-500 flex-shrink-0" title="Remover item">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+          </button>
+        </div>`;
+      }).join('');
+    }
+    carrinho_atualizarResumo();
+  };
+
+  window.carrinho_mudarQtd = function(id, delta){
+    const item = carrinho.find(i=>i.id===id);
+    if(!item) return;
+    item.qtd = Math.max(1, Math.min(99, item.qtd + delta));
+    carrinho_render();
+  };
+
+  window.carrinho_remover = function(id){
+    const item = carrinho.find(i=>i.id===id);
+    if(!item) return;
+    abrirModal(`<div class="text-center py-4">
+      <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-3">
+        <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+      </div>
+      <p class="font-display font-semibold text-gray-900 text-base mb-1">Remover "${item.nome}"?</p>
+      <p class="font-body text-sm text-gray-500">Esta ação não pode ser desfeita.</p>
+    </div>`, 'Confirmar Remoção');
+    setTimeout(()=>{
+      const btnConfirm = document.querySelector('[data-modal-acao]');
+      if(btnConfirm){
+        btnConfirm.onclick = function(){
+          carrinho = carrinho.filter(i=>i.id!==id);
+          fecharModal();
+          carrinho_render();
+          toast('Item removido do carrinho','info');
+        };
+        btnConfirm.textContent = 'Remover';
+        btnConfirm.classList.remove('bg-gray-900','hover:bg-gray-800');
+        btnConfirm.classList.add('bg-red-600','hover:bg-red-700');
+      }
+      const btnCancel = document.querySelector('[data-modal-fechar]');
+      if(btnCancel){ btnCancel.textContent='Cancelar'; btnCancel.classList.add('bg-gray-100','text-gray-700','hover:bg-gray-200'); btnCancel.classList.remove('bg-gray-900','text-white','hover:bg-gray-800'); }
+    },50);
+  };
+
+  window.carrinho_aplicarCupom = function(){
+    const input = document.getElementById('cupom-input');
+    const msg = document.getElementById('cupom-msg');
+    const val = input.value.trim().toUpperCase();
+    if(!val){ toast('Digite um código de cupom','erro'); return; }
+    if(val==='BEMVINDO10'){
+      desconto = 0.10;
+      msg.textContent = '✓ Cupom aplicado! 10% de desconto.';
+      msg.className = 'text-xs mt-1.5 text-green-600 font-body';
+      msg.classList.remove('hidden');
+      toast('Cupom BEMVINDO10 aplicado! 10% OFF','ok');
+    } else if(val==='EVANGELHO5'){
+      desconto = 0.05;
+      msg.textContent = '✓ Cupom aplicado! 5% de desconto.';
+      msg.className = 'text-xs mt-1.5 text-green-600 font-body';
+      msg.classList.remove('hidden');
+      toast('Cupom EVANGELHO5 aplicado! 5% OFF','ok');
+    } else {
+      desconto = 0;
+      msg.textContent = '✗ Cupom inválido ou expirado.';
+      msg.className = 'text-xs mt-1.5 text-red-500 font-body';
+      msg.classList.remove('hidden');
+      toast('Cupom inválido','erro');
+    }
+    carrinho_atualizarResumo();
+  };
+
+  window.carrinho_continuarPagamento = function(){
+    if(carrinho.length===0){ toast('Adicione itens ao carrinho primeiro','erro'); return; }
+    mostrarTela('checkout');
+  };
+
+  function carrinho_atualizarResumo(){
+    const subtotal = carrinho.reduce((a,i)=>a+i.preco*i.qtd,0);
+    const totalItens = carrinho.reduce((a,i)=>a+i.qtd,0);
+    const valorDesconto = subtotal * desconto;
+    const totalFinal = subtotal - valorDesconto;
+    document.getElementById('resumo-subtotal').textContent = brl(subtotal);
+    document.getElementById('resumo-qtd').textContent = totalItens;
+    document.getElementById('resumo-total').textContent = brl(totalFinal);
+    const descLinha = document.getElementById('resumo-desconto-linha');
+    const descSpan = document.getElementById('resumo-desconto');
+    if(desconto>0){
+      descLinha.classList.remove('hidden');
+      descSpan.textContent = '- ' + brl(valorDesconto);
+    } else {
+      descLinha.classList.add('hidden');
+    }
+  }
+
+  if(document.getElementById('carrinho-lista')) carrinho_render();
+})();
+</script>
+
     <!-- TELAS -->
       </main>
 
