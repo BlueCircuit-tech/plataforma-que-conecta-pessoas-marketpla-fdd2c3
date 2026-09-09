@@ -1754,6 +1754,359 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 
+    <section data-tela="confirmacao" class="hidden">
+      <div class="min-h-screen pb-28">
+        <!-- Header de confirmação -->
+        <div class="bg-marca-900 px-6 pt-10 pb-12 rounded-b-[2rem] relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-40 h-40 bg-marca/10 rounded-full -translate-y-1/2 translate-x-1/4"></div>
+          <div class="absolute bottom-0 left-0 w-24 h-24 bg-marca/5 rounded-full translate-y-1/2 -translate-x-1/4"></div>
+          <div class="text-center relative z-10">
+            <div class="w-20 h-20 mx-auto mb-4 relative">
+              <svg class="w-20 h-20 animate-bounce" viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="38" stroke="#D4AF37" stroke-width="3" fill="none" opacity="0.3"/>
+                <circle cx="40" cy="40" r="38" fill="#D4AF37" opacity="0.15"/>
+                <path d="M24 42 L34 52 L56 30" stroke="#D4AF37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" class="check-path" stroke-dasharray="60" stroke-dashoffset="60"/>
+              </svg>
+            </div>
+            <h1 class="font-display text-2xl font-bold text-white mb-1">Pedido Confirmado!</h1>
+            <p class="text-white/60 text-sm font-body">Seu pedido foi recebido com sucesso</p>
+          </div>
+        </div>
+
+        <!-- Número do pedido -->
+        <div class="px-6 -mt-6 relative z-10">
+          <div class="bg-white rounded-2xl shadow-lg shadow-marca-900/5 p-5 text-center border border-marca-900/5">
+            <p class="text-xs text-marca-900/40 font-body uppercase tracking-wider mb-1">Número do Pedido</p>
+            <p class="font-display text-2xl font-bold text-marca-900 tracking-widest">#CMD-<span id="confirmacao_numero_pedido">20250615-0847</span></p>
+            <p class="text-xs text-marca-900/40 mt-2 font-body" id="confirmacao_data_pedido">15 de junho de 2025 às 08:47</p>
+          </div>
+        </div>
+
+        <!-- Status do pedido -->
+        <div class="px-6 mt-5">
+          <div class="bg-white rounded-2xl shadow-sm border border-marca-900/5 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-display font-bold text-marca-900 text-base">Status do Pedido</h2>
+              <span class="badge bg-green-100 text-green-700 text-xs font-medium px-3 py-1 rounded-full">Confirmado</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-marca/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-marca" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-marca-900">Pagamento aprovado</p>
+                <p class="text-xs text-marca-900/50">Aguardando separação do pedido</p>
+              </div>
+            </div>
+            <!-- Timeline -->
+            <div class="mt-5 space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-marca flex-shrink-0 ring-4 ring-marca/20"></div>
+                <p class="text-xs text-marca-900/60 font-body">Pedido realizado</p>
+                <span class="text-xs text-marca-900/40 ml-auto">15/06 08:47</span>
+              </div>
+              <div class="ml-1.5 w-px h-5 bg-marca/20"></div>
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-marca flex-shrink-0 ring-4 ring-marca/20"></div>
+                <p class="text-xs text-marca-900/60 font-body">Pagamento confirmado</p>
+                <span class="text-xs text-marca-900/40 ml-auto">15/06 08:47</span>
+              </div>
+              <div class="ml-1.5 w-px h-5 bg-marca-900/10"></div>
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-marca-900/10 flex-shrink-0"></div>
+                <p class="text-xs text-marca-900/40 font-body">Em separação</p>
+                <span class="text-xs text-marca-900/30 ml-auto">—</span>
+              </div>
+              <div class="ml-1.5 w-px h-5 bg-marca-900/10"></div>
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-marca-900/10 flex-shrink-0"></div>
+                <p class="text-xs text-marca-900/40 font-body">A caminho</p>
+                <span class="text-xs text-marca-900/30 ml-auto">—</span>
+              </div>
+              <div class="ml-1.5 w-px h-5 bg-marca-900/10"></div>
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-marca-900/10 flex-shrink-0"></div>
+                <p class="text-xs text-marca-900/40 font-body">Entregue</p>
+                <span class="text-xs text-marca-900/30 ml-auto">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumo dos itens -->
+        <div class="px-6 mt-5">
+          <div class="bg-white rounded-2xl shadow-sm border border-marca-900/5 p-5">
+            <h2 class="font-display font-bold text-marca-900 text-base mb-4">Itens do Pedido</h2>
+            <div class="space-y-4" id="confirmacao_itens">
+              <div class="flex gap-4">
+                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-marca/20 to-marca/5 flex items-center justify-center flex-shrink-0">
+                  <span class="font-display text-marca font-bold text-xs text-center leading-tight">BÍBLIA<br>SAGrada</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-marca-900 truncate">Bíblia Sagrada NVI</p>
+                  <p class="text-xs text-marca-900/50 mt-0.5">Capa dura • Letra grande • 1 un</p>
+                  <div class="flex items-center justify-between mt-1.5">
+                    <p class="text-sm font-bold text-marca-900">R$ 89,90</p>
+                  </div>
+                </div>
+              </div>
+              <div class="h-px bg-marca-900/5"></div>
+              <div class="flex gap-4">
+                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-marca/20 to-marca/5 flex items-center justify-center flex-shrink-0">
+                  <span class="font-display text-marca font-bold text-xs text-center leading-tight">DEVOC.<br>DIÁRIO</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-marca-900 truncate">Devocional Diário 2025</p>
+                  <p class="text-xs text-marca-900/50 mt-0.5">Capa mole • 366 dias • 1 un</p>
+                  <div class="flex items-center justify-between mt-1.5">
+                    <p class="text-sm font-bold text-marca-900">R$ 45,00</p>
+                  </div>
+                </div>
+              </div>
+              <div class="h-px bg-marca-900/5"></div>
+              <div class="flex gap-4">
+                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-marca/20 to-marca/5 flex items-center justify-center flex-shrink-0">
+                  <span class="font-display text-marca font-bold text-xs text-center leading-tight">MARCADOR<br>BÍBLICO</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-marca-900 truncate">Marcador Bíblico de Couro</p>
+                  <p class="text-xs text-marca-900/50 mt-0.5">Artimanha • Marrom • 1 un</p>
+                  <div class="flex items-center justify-between mt-1.5">
+                    <p class="text-sm font-bold text-marca-900">R$ 32,90</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Totais -->
+            <div class="mt-5 pt-4 border-t border-marca-900/5 space-y-2">
+              <div class="flex justify-between text-xs text-marca-900/50">
+                <span>Subtotal</span>
+                <span>R$ 167,80</span>
+              </div>
+              <div class="flex justify-between text-xs text-marca-900/50">
+                <span>Frete</span>
+                <span class="text-green-600 font-medium">Grátis</span>
+              </div>
+              <div class="flex justify-between text-sm font-bold text-marca-900 pt-2 border-t border-marca-900/5">
+                <span>Total</span>
+                <span>R$ 167,80</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informações de entrega e pagamento -->
+        <div class="px-6 mt-5">
+          <div class="bg-white rounded-2xl shadow-sm border border-marca-900/5 p-5 space-y-4">
+            <!-- Prazo de entrega -->
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-marca-900">Prazo de Entrega</p>
+                <p class="text-xs text-marca-900/50 mt-0.5">Previsão: <span class="text-marca-900 font-medium">18 a 22 de junho</span></p>
+                <p class="text-xs text-marca-900/40 mt-0.5">Jussara, GO</p>
+              </div>
+            </div>
+            <!-- Forma de pagamento -->
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-marca/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-marca" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-marca-900">Forma de Pagamento</p>
+                <p class="text-xs text-marca-900/50 mt-0.5">PIX</p>
+                <p class="text-xs text-marca-900/40 mt-0.5">Aprovado em 15/06/2025 08:47</p>
+              </div>
+            </div>
+            <!-- Compartilhar -->
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 110-2.684 3 3 0 010 2.684z"/></svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-marca-900">Compartilhar</p>
+                <p class="text-xs text-marca-900/50 mt-0.5">Conte para seus amigos sobre sua compra</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compartilhar botões -->
+        <div class="px-6 mt-3">
+          <div class="flex gap-3">
+            <button onclick="confirmacao_compartilhar('whatsapp')" class="flex-1 bg-green-500 hover:bg-green-600 active:scale-95 transition-all duration-200 text-white rounded-xl py-3 flex items-center justify-center gap-2 shadow-sm">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <span class="text-sm font-medium">WhatsApp</span>
+            </button>
+            <button onclick="confirmacao_compartilhar('link')" class="flex-1 bg-marca/10 hover:bg-marca/20 active:scale-95 transition-all duration-200 text-marca-900 rounded-xl py-3 flex items-center justify-center gap-2 border border-marca/20">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <span class="text-sm font-medium">Copiar Link</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Botões de ação -->
+        <div class="px-6 mt-6 space-y-3">
+          <button onclick="mostrarTela('pedidos')" class="w-full bg-marca hover:bg-marca-600 active:scale-[0.98] transition-all duration-200 text-marca-900 font-display font-bold text-base py-4 rounded-2xl shadow-lg shadow-marca/20 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            Acompanhar Pedido
+          </button>
+          <button onclick="mostrarTela('home')" class="w-full bg-white hover:bg-marca-900/5 active:scale-[0.98] transition-all duration-200 text-marca-900 font-display font-bold text-base py-4 rounded-2xl border border-marca-900/10 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Voltar para Home
+          </button>
+        </div>
+
+        <!-- Você também pode gostar -->
+        <div class="mt-8">
+          <div class="px-6 mb-4">
+            <h2 class="font-display font-bold text-marca-900 text-lg">Você também pode gostar</h2>
+            <p class="text-xs text-marca-900/40 mt-1 font-body">Produtos relacionados ao seu pedido</p>
+          </div>
+          <div class="flex gap-4 overflow-x-auto px-6 pb-2 scrollbar-hide" style="scroll-snap-type: x mandatory;">
+            <div onclick="confirmacao_verRecomendacao('devocional-juvenil')" class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-marca-900/5 overflow-hidden cursor-pointer active:scale-95 transition-all duration-200" style="scroll-snap-align: start;">
+              <div class="w-full h-36 bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center">
+                <span class="font-display text-blue-700 font-bold text-xs text-center leading-tight px-2">DEVOCIONAL<br>JUVENIL</span>
+              </div>
+              <div class="p-3">
+                <p class="text-sm font-medium text-marca-900 truncate">Devocional Juvenil</p>
+                <p class="text-xs text-marca-900/50 mt-0.5">Capa dura • 360 dias</p>
+                <p class="text-sm font-bold text-marca-900 mt-2">R$ 54,90</p>
+              </div>
+            </div>
+            <div onclick="confirmacao_verRecomendacao('harpa-crista')" class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-marca-900/5 overflow-hidden cursor-pointer active:scale-95 transition-all duration-200" style="scroll-snap-align: start;">
+              <div class="w-full h-36 bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center">
+                <span class="font-display text-purple-700 font-bold text-xs text-center leading-tight px-2">HARPA<br>CRISTÃ</span>
+              </div>
+              <div class="p-3">
+                <p class="text-sm font-medium text-marca-900 truncate">Harpa Cristã</p>
+                <p class="text-xs text-marca-900/50 mt-0.5">Letra grande • 1200 hinos</p>
+                <p class="text-sm font-bold text-marca-900 mt-2">R$ 39,90</p>
+              </div>
+            </div>
+            <div onclick="confirmacao_verRecomendacao('estudo-biblico')" class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-marca-900/5 overflow-hidden cursor-pointer active:scale-95 transition-all duration-200" style="scroll-snap-align: start;">
+              <div class="w-full h-36 bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center">
+                <span class="font-display text-amber-700 font-bold text-xs text-center leading-tight px-2">GUIA DE<br>ESTUDO</span>
+              </div>
+              <div class="p-3">
+                <p class="text-sm font-medium text-marca-900 truncate">Guia de Estudo Bíblico</p>
+                <p class="text-xs text-marca-900/50 mt-0.5">Capa mole • 240 págs</p>
+                <p class="text-sm font-bold text-marca-900 mt-2">R$ 29,90</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Espaçamento final -->
+        <div class="h-8"></div>
+      </div>
+
+      <script>
+        function confirmacao_init() {
+          // Anima o checkmark com stroke-dashoffset
+          const checkPath = document.querySelector('.check-path');
+          if (checkPath) {
+            setTimeout(() => {
+              checkPath.style.transition = 'stroke-dashoffset 0.8s ease-out';
+              checkPath.style.strokeDashoffset = '0';
+            }, 300);
+          }
+          // Animação de entrada dos itens
+          const itens = document.querySelectorAll('#confirmacao_itens > div');
+          itens.forEach((item, i) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(12px)';
+            item.style.transition = 'all 0.4s ease-out';
+            setTimeout(() => {
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+            }, 400 + (i * 120));
+          });
+        }
+
+        function confirmacao_compartilhar(plataforma) {
+          const texto = 'Acabei de fazer uma compra na plataforma da Igreja Batista do Calvário! 🙏 Confira também: ';
+          if (plataforma === 'whatsapp') {
+            toast('Abrindo WhatsApp para compartilhar...', 'ok');
+            setTimeout(() => {
+              window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+            }, 800);
+          } else if (plataforma === 'link') {
+            navigator.clipboard.writeText(window.location.origin + '/pedido/CMD-20250615-0847').then(() => {
+              toast('Link copiado para a área de transferência!', 'ok');
+            }).catch(() => {
+              toast('Link copiado!', 'ok');
+            });
+          }
+        }
+
+        function confirmacao_verRecomendacao(produtoId) {
+          toast('Abrindo detalhes do produto...', 'info');
+          const nomes = {
+            'devocional-juvenil': 'Devocional Juvenil',
+            'harpa-crista': 'Harpa Cristã',
+            'estudo-biblico': 'Guia de Estudo Bíblico'
+          };
+          const precos = {
+            'devocional-juvenil': 'R$ 54,90',
+            'harpa-crista': 'R$ 39,90',
+            'estudo-biblico': 'R$ 29,90'
+          };
+          const nome = nomes[produtoId] || produtoId;
+          const preco = precos[produtoId] || 'R$ 0,00';
+          const cores = {
+            'devocional-juvenil': 'from-blue-100 to-blue-50 text-blue-700',
+            'harpa-crista': 'from-purple-100 to-purple-50 text-purple-700',
+            'estudo-biblico': 'from-amber-100 to-amber-50 text-amber-700'
+          };
+          const cor = cores[produtoId] || 'from-marca/20 to-marca/5 text-marca';
+          const html = `
+            <div class="text-center">
+              <div class="w-full h-40 rounded-xl bg-gradient-to-br ${cor} flex items-center justify-center mb-4">
+                <span class="font-display font-bold text-sm">${nome.toUpperCase()}</span>
+              </div>
+              <h3 class="font-display font-bold text-marca-900 text-lg">${nome}</h3>
+              <p class="text-sm text-marca-900/50 mt-1">Produto recomendado com base na sua compra</p>
+              <p class="text-xl font-bold text-marca mt-3">${preco}</p>
+              <div class="mt-4 p-3 bg-marca/5 rounded-xl text-left">
+                <p class="text-xs text-marca-900/60 leading-relaxed">Produto de excelente qualidade, perfeito para aprofundar sua caminhada de fé. Disponível para envio imediato.</p>
+              </div>
+              <div class="mt-5 flex gap-3">
+                <button onclick="confirmacao_addRecomendacao('${produtoId}')" class="flex-1 bg-marca hover:bg-marca-600 active:scale-95 transition-all duration-200 text-marca-900 font-bold text-sm py-3 rounded-xl">
+                  Adicionar ao Carrinho
+                </button>
+                <button onclick="fecharModal()" class="flex-1 bg-white hover:bg-marca-900/5 active:scale-95 transition-all duration-200 text-marca-900 font-bold text-sm py-3 rounded-xl border border-marca-900/10">
+                  Fechar
+                </button>
+              </div>
+            </div>
+          `;
+          abrirModal(html, 'Detalhes do Produto');
+        }
+
+        function confirmacao_addRecomendacao(produtoId) {
+          fecharModal();
+          toast('Produto adicionado ao carrinho!', 'ok');
+        }
+
+        // Inicializa animações quando a tela é exibida
+        document.addEventListener('DOMContentLoaded', () => {
+          const tela = document.querySelector('[data-tela="confirmacao"]');
+          if (tela) {
+            const observer = new MutationObserver(() => {
+              if (!tela.classList.contains('hidden')) {
+                confirmacao_init();
+                observer.disconnect();
+              }
+            });
+            observer.observe(tela, { attributes: true, attributeFilter: ['class'] });
+          }
+        });
+      </script>
+    </section>
+
     <!-- TELAS -->
       </main>
 
