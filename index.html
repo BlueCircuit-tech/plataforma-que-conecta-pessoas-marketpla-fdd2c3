@@ -563,6 +563,283 @@
   </script>
 </section>
 
+    <section data-tela="explorar" class="hidden">
+    <div class="px-4 pt-2 pb-24">
+        <div class="mt-4 mb-3">
+            <h2 class="font-display text-xl font-bold text-gray-900">Explorar</h2>
+            <p class="text-sm text-gray-500 mt-0.5">Descubra o que a comunidade oferece</p>
+        </div>
+
+        <div class="relative mb-3">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <input type="text" id="explorar-busca" placeholder="Buscar produtos, serviços..." class="w-full pl-9 pr-4 py-2.5 bg-gray-100 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-marca-500/50 font-body" oninput="explorar_filtrar()"/>
+        </div>
+
+        <div class="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 no-scrollbar" id="explorar-categorias">
+            <button onclick="explorar_setCategoria('todos')" data-cat="todos" class="explorar-cat-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold font-body bg-marca-500 text-white transition-all">Todos</button>
+            <button onclick="explorar_setCategoria('bazar')" data-cat="bazar" class="explorar-cat-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold font-body bg-gray-100 text-gray-600 transition-all hover:bg-gray-200">Bazar</button>
+            <button onclick="explorar_setCategoria('servicos')" data-cat="servicos" class="explorar-cat-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold font-body bg-gray-100 text-gray-600 transition-all hover:bg-gray-200">Serviços</button>
+            <button onclick="explorar_setCategoria('eventos')" data-cat="eventos" class="explorar-cat-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold font-body bg-gray-100 text-gray-600 transition-all hover:bg-gray-200">Eventos</button>
+            <button onclick="explorar_setCategoria('doacoes')" data-cat="doacoes" class="explorar-cat-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold font-body bg-gray-100 text-gray-600 transition-all hover:bg-gray-200">Doações</button>
+        </div>
+
+        <div class="flex items-center justify-between mb-3">
+            <span id="explorar-contagem" class="text-xs text-gray-500 font-body"></span>
+            <div class="relative">
+                <select id="explorar-ordem" onchange="explorar_ordenar()" class="appearance-none bg-gray-100 text-xs text-gray-700 font-body pl-3 pr-7 py-1.5 rounded-lg focus:outline-none cursor-pointer">
+                    <option value="recentes">Mais recentes</option>
+                    <option value="preco-menor">Menor preço</option>
+                    <option value="preco-maior">Maior preço</option>
+                    <option value="proximos">Mais próximos</option>
+                </select>
+                <svg class="w-3 h-3 text-gray-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+        </div>
+
+        <div id="explorar-pull" class="flex items-center justify-center py-2 text-xs text-gray-400 font-body transition-all">
+            <svg class="w-4 h-4 mr-1 animate-spin hidden" id="explorar-spinner" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+            <span id="explorar-pull-text">Solte para atualizar</span>
+        </div>
+
+        <div id="explorar-grid" class="grid grid-cols-2 gap-3"></div>
+
+        <div id="explorar-vazio" class="hidden flex-col items-center justify-center py-16 px-8 text-center">
+            <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <p class="font-display font-semibold text-gray-700 text-base mb-1">Nenhum resultado</p>
+            <p class="text-xs text-gray-400 font-body">Tente buscar por outro termo ou mudar os filtros</p>
+        </div>
+
+        <div id="explorar-loader" class="hidden flex items-center justify-center py-4">
+            <div class="flex items-center gap-2 text-xs text-gray-400 font-body">
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                Carregando mais...
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+const explorar_itens = [
+    {id:1,titulo:'Bíblia de Estudo NVI',categoria:'bazar',preco:89.90,frete:0,anunciante:'Pastor João Silva',iniciais:'JS',cor:'#D4AF37',local:'Centro, Jussara',distancia:'0.5 km',fotos:1,destaque:true,tempo:'2h',favorito:false,descricao:'Bíblia de Estudo Nova Versão Internacional, capa dura, em ótimo estado. Usada para estudos da igreja.',condicao:'Usado - Ótimo'},
+    {id:2,titulo:'Aula de Violão para Iniciantes',categoria:'servicos',preco:40,frete:null,anunciante:'Ministério de Louvor',iniciais:'ML',cor:'#D4AF37',local:'Sede da Igreja',distancia:'0.2 km',fotos:2,destaque:false,tempo:'5h',favorito:false,descricao:'Aulas particulares de violão para iniciantes. Material didático incluso. Terças e quintas às 19h.',condicao:'Serviço'},
+    {id:3,titulo:'Café Comunitário - Arrecadação',categoria:'eventos',preco:0,frete:null,anunciante:'Ministério Feminino',iniciais:'MF',cor:'#D4AF37',local:'Salão da Igreja',distancia:'0.2 km',fotos:1,destaque:true,tempo:'1d',favorito:false,descricao:'Participe do nosso Café Comunitário! Valor da entrada: 1kg de alimento não perecível. Todo arrecadado vai para a obra social.',condicao:'Evento'},
+    {id:4,titulo:'Cesta Básica Familiar',categoria:'doacoes',preco:0,frete:0,anunciante:'Obra Social IBC',iniciais:'OS',cor:'#D4AF37',local:'Jussara, GO',distancia:'1.2 km',fotos:1,destaque:false,tempo:'3h',favorito:false,descricao:'Cestas básicas disponíveis para famílias carentes da comunidade. Retirar na sede da igreja com documento.',condicao:'Doação'},
+    {id:5,titulo:'Jantar de Casais 2025',categoria:'eventos',preco:50,frete:null,anunciante:'Encontro de Casais',iniciais:'EC',cor:'#D4AF37',local:'Salão de Eventos',distancia:'0.3 km',fotos:3,destaque:true,tempo:'6h',favorito:false,descricao:'Jantar romântico para casais da igreja. Inclui janta, música ao vivo e palestra com o Pr. Marcos. Inscrições abertas!',condicao:'Evento'},
+    {id:6,titulo:'Kit Material Infantil',categoria:'bazar',preco:25,frete:5,anunciante:'Ministério Infantil',iniciais:'MI',cor:'#D4AF37',local:'Jussara, GO',distancia:'0.8 km',fotos:2,destaque:false,tempo:'12h',favorito:false,descricao:'Kit com revistinhas bíblicas, lápis de cor e adesivos para crianças de 4 a 10 anos.',condicao:'Novo'},
+    {id:7,titulo:'Retiro de Jovens - Caldas Novas',categoria:'eventos',preco:120,frete:null,anunciante:'Ministério Juventude',iniciais:'MJ',cor:'#D4AF37',local:'Caldas Novas, GO',distancia:'85 km',fotos:4,destaque:false,tempo:'1d',favorito:false,descricao:'Retiro de jovens de 14 a 25 anos. 3 dias de muita comunhão, palavra e diversão! Vagas limitadas.',condicao:'Evento'},
+    {id:8,titulo:'Serviço de Eletricista',categoria:'servicos',preco:80,frete:null,anunciante:'Irmão Carlos Mendes',iniciais:'CM',cor:'#D4AF37',local:'Jussara e Região',distancia:'3.1 km',fotos:1,destaque:false,tempo:'8h',favorito:false,descricao:'Serviços de elétrica residencial: instalação, reparos, manutenção. Profissional com 15 anos de experiência.',condicao:'Serviço'},
+    {id:9,titulo:'Roupas Infantis - Doação',categoria:'doacoes',preco:0,frete:0,anunciante:'Irmã Maria Oliveira',iniciais:'MO',cor:'#D4AF37',local:'Centro, Jussara',distancia:'0.6 km',fotos:1,destaque:false,tempo:'2d',favorito:false,descricao:'Doação de roupas infantis (menina, 2-4 anos). Todas limpas e em bom estado. Retirar no endereço combinado.',condicao:'Doação'},
+    {id:10,titulo:'Hinário e Partituras',categoria:'bazar',preco:35,frete:8,anunciante:'Ministério de Louvor',iniciais:'ML',cor:'#D4AF37',local:'Sede da Igreja',distancia:'0.2 km',fotos:1,destaque:false,tempo:'4h',favorito:false,descricao:'Coleção de hinários e partituras para coral e conjunto musical. Vários títulos inclusos.',condicao:'Usado - Bom'}
+];
+
+let explorar_categoria = 'todos';
+let explorar_favoritos = new Set();
+let explorar_offset = 0;
+const explorar_pageSize = 6;
+
+function explorar_setCategoria(cat) {
+    explorar_categoria = cat;
+    document.querySelectorAll('.explorar-cat-btn').forEach(b => {
+        if (b.dataset.cat === cat) {
+            b.className = 'explorar-cat-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold font-body bg-marca-500 text-white transition-all';
+        } else {
+            b.className = 'explorar-cat-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold font-body bg-gray-100 text-gray-600 transition-all hover:bg-gray-200';
+        }
+    });
+    explorar_offset = 0;
+    explorar_render();
+}
+
+function explorar_getFiltrados() {
+    const busca = (document.getElementById('explorar-busca')?.value || '').toLowerCase();
+    let lista = explorar_itens;
+    if (explorar_categoria !== 'todos') {
+        lista = lista.filter(i => i.categoria === explorar_categoria);
+    }
+    if (busca) {
+        lista = lista.filter(i => i.titulo.toLowerCase().includes(busca) || i.anunciante.toLowerCase().includes(busca) || i.descricao.toLowerCase().includes(busca));
+    }
+    const ordem = document.getElementById('explorar-ordem')?.value || 'recentes';
+    if (ordem === 'preco-menor') lista = [...lista].sort((a, b) => a.preco - b.preco);
+    else if (ordem === 'preco-maior') lista = [...lista].sort((a, b) => b.preco - a.preco);
+    else if (ordem === 'proximos') lista = [...lista].sort((a, b) => parseFloat(a.distancia) - parseFloat(b.distancia));
+    else lista = [...lista].sort((a, b) => a.tempo.localeCompare(b.tempo));
+    return lista;
+}
+
+function explorar_filtrar() { explorar_offset = 0; explorar_render(); }
+function explorar_ordenar() { explorar_offset = 0; explorar_render(); }
+
+function explorar_toggleFav(e, id) {
+    e.stopPropagation();
+    if (explorar_favoritos.has(id)) {
+        explorar_favoritos.delete(id);
+        toast('Removido dos favoritos', 'info');
+    } else {
+        explorar_favoritos.add(id);
+        toast('Adicionado aos favoritos', 'ok');
+    }
+    const btn = document.querySelector(`[data-fav-id="${id}"]`);
+    if (btn) {
+        const svg = btn.querySelector('svg');
+        if (explorar_favoritos.has(id)) {
+            btn.classList.add('text-marca-500');
+            btn.classList.remove('text-gray-300');
+            svg.setAttribute('fill', 'currentColor');
+        } else {
+            btn.classList.remove('text-marca-500');
+            btn.classList.add('text-gray-300');
+            svg.setAttribute('fill', 'none');
+        }
+    }
+}
+
+function explorar_abrirDetalhe(item) {
+    const precoStr = item.preco === 0 ? 'Gratuito' : 'R$ ' + item.preco.toFixed(2).replace('.', ',');
+    const badgeCat = item.categoria === 'bazar' ? 'Bazar' : item.categoria === 'servicos' ? 'Serviços' : item.categoria === 'eventos' ? 'Evento' : 'Doação';
+    const badgeColor = item.categoria === 'bazar' ? 'bg-blue-100 text-blue-700' : item.categoria === 'servicos' ? 'bg-emerald-100 text-emerald-700' : item.categoria === 'eventos' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700';
+    const iniciais = item.iniciais;
+    const bgGrad = item.cor + '22';
+    const html = `
+        <div class="space-y-4">
+            <div class="w-full h-48 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, ${bgGrad}, #f5f5f5)">
+                <div class="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-display font-bold" style="background:${item.cor};color:#fff">${iniciais}</div>
+            </div>
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold font-body ${badgeColor} mb-1.5">${badgeCat}</span>
+                    <h3 class="font-display font-bold text-gray-900 text-base leading-tight">${item.titulo}</h3>
+                </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <span class="font-display font-bold text-xl text-gray-900">${precoStr}</span>
+                ${item.frete !== null && item.frete === 0 && item.preco > 0 ? '<span class="text-xs text-emerald-600 font-body font-medium">Frete grátis</span>' : ''}
+                ${item.preco === 0 ? '<span class="text-xs text-marca-500 font-body font-medium">Contribua com o Reino</span>' : ''}
+            </div>
+            <p class="text-sm text-gray-600 font-body leading-relaxed">${item.descricao}</p>
+            <div class="flex flex-wrap gap-3 text-xs text-gray-500 font-body">
+                <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>${item.local}</span>
+                <span class="flex items-center gap-1">📍 ${item.distancia}</span>
+                <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>${item.tempo}</span>
+            </div>
+            <div class="flex items-center gap-2 pt-2">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style="background:${item.cor}">${iniciais}</div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-800 font-body">${item.anunciante}</p>
+                    <p class="text-[11px] text-gray-400 font-body">Membro da comunidade</p>
+                </div>
+            </div>
+            <div class="flex gap-2 pt-1">
+                ${item.preco > 0 ? `<button onclick="fecharModal(); mostrarTela('checkout')" class="flex-1 py-2.5 rounded-xl bg-marca-500 text-white text-sm font-semibold font-body active:scale-95 transition-transform text-center">Comprar</button>` : `<button onclick="fecharModal(); toast('Interesse registrado! Entraremos em contato.', 'ok')" class="flex-1 py-2.5 rounded-xl bg-marca-500 text-white text-sm font-semibold font-body active:scale-95 transition-transform text-center">Tenho Interesse</button>`}
+                <button onclick="fecharModal(); mostrarTela('chat')" class="px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold font-body active:scale-95 transition-transform">Chat</button>
+            </div>
+        </div>`;
+    abrirModal(html, item.titulo);
+}
+
+function explorar_render() {
+    const grid = document.getElementById('explorar-grid');
+    const vazio = document.getElementById('explorar-vazio');
+    const contagem = document.getElementById('explorar-contagem');
+    const lista = explorar_getFiltrados();
+    const slice = lista.slice(0, explorar_offset + explorar_pageSize);
+
+    if (lista.length === 0) {
+        grid.innerHTML = '';
+        vazio.classList.remove('hidden');
+        vazio.classList.add('flex');
+        contagem.textContent = '0 resultados';
+        return;
+    }
+    vazio.classList.add('hidden');
+    vazio.classList.remove('flex');
+    contagem.textContent = `${lista.length} ${lista.length === 1 ? 'item' : 'itens'}`;
+
+    grid.innerHTML = slice.map(item => {
+        const precoStr = item.preco === 0 ? 'Gratuito' : 'R$ ' + item.preco.toFixed(2).replace('.', ',');
+        const isFav = explorar_favoritos.has(item.id);
+        const favColor = isFav ? 'text-marca-500' : 'text-gray-300';
+        const favFill = isFav ? 'currentColor' : 'none';
+        return `
+        <div class="card bg-white rounded-2xl overflow-hidden cursor-pointer active:scale-[0.97] transition-all border border-gray-100 shadow-sm" onclick="explorar_abrirDetalhe(explorar_itens.find(i=>i.id===${item.id}))">
+            <div class="relative aspect-[4/3] flex items-center justify-center" style="background: linear-gradient(135deg, ${item.cor}18, #f8f8f8)">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center text-xl font-display font-bold text-white shadow-md" style="background:${item.cor}">${item.iniciais}</div>
+                ${item.destaque ? '<span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-marca-500 text-white text-[10px] font-bold font-body shadow">DESTAQUE</span>' : ''}
+                <button onclick="explorar_toggleFav(event, ${item.id})" data-fav-id="${item.id}" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center ${favColor} hover:scale-110 transition-all">
+                    <svg class="w-4 h-4" fill="${favFill}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                </button>
+            </div>
+            <div class="p-3">
+                <h3 class="font-display font-semibold text-sm text-gray-900 leading-snug line-clamp-2 mb-1">${item.titulo}</h3>
+                <p class="text-[10px] text-gray-400 font-body uppercase tracking-wide mb-1.5">${item.categoria === 'servicos' ? 'Serviço' : item.categoria === 'eventos' ? 'Evento' : item.categoria === 'doacoes' ? 'Doação' : 'Venda'}</p>
+                <div class="flex items-baseline justify-between">
+                    <span class="font-display font-bold text-sm ${item.preco === 0 ? 'text-emerald-600' : 'text-gray-900'}">${precoStr}</span>
+                </div>
+                <div class="flex items-center gap-1 mt-1.5">
+                    <div class="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white shrink-0" style="background:${item.cor}">${item.iniciais}</div>
+                    <span class="text-[11px] text-gray-500 font-body truncate">${item.anunciante}</span>
+                </div>
+                <span class="text-[10px] text-gray-400 font-body flex items-center gap-0.5 mt-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                    ${item.distancia}
+                </span>
+            </div>
+        </div>`;
+    }).join('');
+
+    explorar_offset = slice.length;
+
+    const loader = document.getElementById('explorar-loader');
+    if (explorar_offset < lista.length) {
+        loader.classList.remove('hidden');
+        loader.classList.add('flex');
+    } else {
+        loader.classList.add('hidden');
+        loader.classList.remove('flex');
+    }
+}
+
+let explorar_pullStart = 0;
+let explorar_pulling = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    explorar_render();
+    const pullEl = document.getElementById('explorar-pull');
+    if (pullEl) {
+        pullEl.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0) { explorar_pullStart = e.touches[0].clientY; explorar_pulling = true; }
+        }, {passive: true});
+        pullEl.addEventListener('touchmove', (e) => {
+            if (!explorar_pulling) return;
+            const diff = e.touches[0].clientY - explorar_pullStart;
+            const txt = document.getElementById('explorar-pull-text');
+            if (diff > 60 && txt) { txt.textContent = 'Solte para atualizar'; }
+        }, {passive: true});
+        pullEl.addEventListener('touchend', (e) => {
+            if (!explorar_pulling) return;
+            explorar_pulling = false;
+            const diff = (e.changedTouches[0]?.clientY || 0) - explorar_pullStart;
+            const spinner = document.getElementById('explorar-spinner');
+            const txt = document.getElementById('explorar-pull-text');
+            if (diff > 60) {
+                if (spinner) spinner.classList.remove('hidden');
+                if (txt) txt.textContent = 'Atualizando...';
+                setTimeout(() => {
+                    explorar_render();
+                    if (spinner) spinner.classList.add('hidden');
+                    if (txt) txt.textContent = 'Atualizado!';
+                    toast('Conteúdo atualizado', 'ok');
+                    setTimeout(() => { if (txt) txt.textContent = 'Solte para atualizar'; }, 1500);
+                }, 1000);
+            }
+        });
+    }
+});
+</script>
+
     <!-- TELAS -->
       </main>
 
