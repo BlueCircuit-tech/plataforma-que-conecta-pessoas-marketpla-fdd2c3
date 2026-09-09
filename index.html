@@ -2456,6 +2456,167 @@ document.addEventListener('DOMContentLoaded', () => {
       </script>
     </section>
 
+    <section data-tela="pedidos" class="hidden">
+      <div class="px-5 pt-2 pb-3">
+        <div class="flex items-center justify-between mb-1">
+          <div>
+            <h1 class="font-display text-2xl font-bold text-neutral-900">Pedidos</h1>
+            <p class="text-sm text-neutral-500 mt-0.5" id="pedidos-subtotal">8 pedidos no total</p>
+          </div>
+          <button onclick="mostrarTela('explorar')" class="w-10 h-10 flex items-center justify-center rounded-full bg-marca text-white active:scale-90 transition-transform" title="Novo pedido">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/></svg>
+          </button>
+        </div>
+        <div class="flex bg-neutral-100 rounded-xl p-1 mt-3 gap-1" id="pedidos-tabs">
+          <button onclick="pedidos_trocarAba('todos')" data-aba="todos" class="aba-pedido flex-1 py-2 px-1 text-xs font-semibold rounded-lg transition-all duration-200 bg-white text-neutral-900 shadow-sm">Todos <span class="aba-contagem ml-0.5 opacity-60">(8)</span></button>
+          <button onclick="pedidos_trocarAba('comprados')" data-aba="comprados" class="aba-pedido flex-1 py-2 px-1 text-xs font-semibold rounded-lg transition-all duration-200 text-neutral-500">Comprados <span class="aba-contagem ml-0.5 opacity-60">(4)</span></button>
+          <button onclick="pedidos_trocarAba('vendidos')" data-aba="vendidos" class="aba-pedido flex-1 py-2 px-1 text-xs font-semibold rounded-lg transition-all duration-200 text-neutral-500">Vendidos <span class="aba-contagem ml-0.5 opacity-60">(3)</span></button>
+          <button onclick="pedidos_trocarAba('finalizados')" data-aba="finalizados" class="aba-pedido flex-1 py-2 px-1 text-xs font-semibold rounded-lg transition-all duration-200 text-neutral-500">Finalizados <span class="aba-contagem ml-0.5 opacity-60">(1)</span></button>
+        </div>
+      </div>
+      <div id="pedidos-lista" class="px-5 pb-6 flex flex-col gap-3"></div>
+      <div id="pedidos-vazio" class="hidden px-5 pb-8 pt-4 text-center">
+        <div class="w-20 h-20 rounded-full bg-neutral-100 flex items-center justify-center mx-auto mb-4">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#A3A3A3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <p class="font-display font-semibold text-neutral-700 text-base mb-1">Nenhum pedido encontrado</p>
+        <p class="text-sm text-neutral-500 mb-5">Esta categoria ainda não tem pedidos.</p>
+        <button onclick="mostrarTela('explorar')" class="btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-marca active:scale-95 transition-transform">Explorar produtos</button>
+      </div>
+      <button onclick="mostrarTela('explorar')" class="fab-btn fixed bottom-6 right-5 w-14 h-14 bg-marca text-white rounded-full shadow-lg shadow-marca/30 flex items-center justify-center active:scale-90 transition-transform z-40" title="Novo Pedido">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="6" x2="12" y2="18"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
+      </button>
+      <div id="modal-overlay" class="fixed inset-0 bg-black/50 z-50 hidden items-end sm:items-center justify-center" onclick="if(event.target===this)fecharModal()">
+        <div id="modal-content" class="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md max-h-[85vh] overflow-y-auto animate-slideUp"></div>
+      </div>
+      <script>
+      var pedidos_tab='todos';
+      var pedidos_aba={todos:0,comprados:0,vendidos:0,finalizados:0};
+      var pedidos_dados=[
+        {id:'PED-20240115-001',tipo:'comprado',status:'Em andamento',data:'2024-01-15',produto:'Fone Bluetooth Premium',cat:'Eletrônicos',valor:189.90,outra:'Loja EletroMax',foto:'FE',cor:'from-blue-400 to-blue-600',etapas:[{et:'Criado',ok:true},{et:'Pago',ok:true},{et:'Enviado',ok:false},{et:'Entregue',ok:false}]},
+        {id:'PED-20240110-002',tipo:'comprado',status:'Pendente',data:'2024-01-10',produto:'Camiseta Algodão Orgânico',cat:'Roupas',valor:79.90,outra:'Moda Natural Store',foto:'CA',cor:'from-emerald-400 to-emerald-600',etapas:[{et:'Criado',ok:true},{et:'Pago',ok:false},{et:'Enviado',ok:false},{et:'Entregue',ok:false}]},
+        {id:'PED-20240108-003',tipo:'vendido',status:'Em andamento',data:'2024-01-08',produto:'Tênis Running Pro',cat:'Calçados',valor:299.90,outra:'Carlos M.',foto:'TR',cor:'from-orange-400 to-red-500',etapas:[{et:'Criado',ok:true},{et:'Pago',ok:true},{et:'Enviado',ok:false},{et:'Entregue',ok:false}]},
+        {id:'PED-20240105-004',tipo:'comprado',status:'Cancelado',data:'2024-01-05',produto:'Kit Panelas Antiaderente',cat:'Cozinha',valor:249.90,outra:'Cozinha & Cia',foto:'KP',cor:'from-rose-400 to-pink-600',etapas:[{et:'Criado',ok:true},{et:'Pago',ok:false},{et:'Enviado',ok:false},{et:'Entregue',ok:false}]},
+        {id:'PED-20231228-005',tipo:'vendido',status:'Concluído',data:'2023-12-28',produto:'Óculos de Sol Vintage',cat:'Acessórios',valor:150.00,outra:'Ana P.',foto:'OS',cor:'from-amber-400 to-yellow-600',etapas:[{et:'Criado',ok:true},{et:'Pago',ok:true},{et:'Enviado',ok:true},{et:'Entregue',ok:true}]},
+        {id:'PED-20231220-006',tipo:'comprado',status:'Concluído',data:'2023-12-20',produto:'Relógio Smartwatch Fit',cat:'Eletrônicos',valor:450.00,outra:'Tech Express',foto:'RF',cor:'from-slate-500 to-slate-700',etapas:[{et:'Criado',ok:true},{et:'Pago',ok:true},{et:'Enviado',ok:true},{et:'Entregue',ok:true}]},
+        {id:'PED-20231215-007',tipo:'vendido',status:'Concluído',data:'2023-12-15',produto:'Bicicleta Aro 29',cat:'Esportes',valor:1200.00,outra:'João R.',foto:'BA',cor:'from-teal-400 to-cyan-600',etapas:[{et:'Criado',ok:true},{et:'Pago',ok:true},{et:'Enviado',ok:true},{et:'Entregue',ok:true}]},
+        {id:'PED-20231210-008',tipo:'comprado',status:'Em andamento',data:'2023-12-10',produto:'Câmera Vintage Analógica',cat:'Fotografia',valor:680.00,outra:'Colecionador SP',foto:'CV',cor:'from-indigo-400 to-purple-600',etapas:[{et:'Criado',ok:true},{et:'Pago',ok:true},{et:'Enviado',ok:false},{et:'Entregue',ok:false}]}
+      ];
+      var pedidos_etapasNomes={Pendente:0,'Em andamento':1,Concluído:3,Cancelado:-1};
+      var pedidos_badge={Pendente:'bg-amber-100 text-amber-700','Em andamento':'bg-blue-100 text-blue-700',Concluído:'bg-emerald-100 text-emerald-700',Cancelado:'bg-red-100 text-red-700'};
+      function brl(v){return'R$ '+v.toFixed(2).replace('.',',');}
+      function dataBR(iso){var p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+      function pedidos_badgeSvg(status){
+        var m={Pendente:'<circle cx="12" cy="12" r="8" fill="none" stroke="#D97706" stroke-width="2"/><path d="M12 7v4" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>','Em andamento':'<circle cx="12" cy="12" r="8" fill="none" stroke="#2563EB" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',Concluído:'<circle cx="12" cy="12" r="8" fill="none" stroke="#059669" stroke-width="2"/><path d="M8 12l3 3 5-6" stroke="#059669" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',Cancelado:'<circle cx="12" cy="12" r="8" fill="none" stroke="#DC2626" stroke-width="2"/><line x1="9" y1="9" x2="15" y2="15" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="9" x2="9" y2="15" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/>'};
+        return'<svg width="12" height="12" viewBox="0 0 24 24">'+(m[status]||m.Pendente)+'</svg>';
+      }
+      function pedidos_card(o){
+        var isVendido=o.tipo==='vendido';
+        var outroLabel=isVendido?'Comprador':'Vendedor';
+        return'<div onclick="pedidos_detalhe(\''+o.id+'\')" class="card bg-white rounded-2xl p-4 cursor-pointer active:scale-[0.98] transition-all duration-150 border border-neutral-100">'+
+          '<div class="flex items-start gap-3">'+
+            '<div class="w-14 h-14 rounded-xl bg-gradient-to-br '+o.cor+' flex items-center justify-center flex-shrink-0 shadow-sm">'+
+              '<span class="text-white font-bold text-sm">'+o.foto+'</span>'+
+            '</div>'+
+            '<div class="flex-1 min-w-0">'+
+              '<div class="flex items-center justify-between mb-0.5">'+
+                '<span class="text-[11px] font-mono text-neutral-400">'+o.id+'</span>'+
+                '<span class="text-[11px] text-neutral-400">'+dataBR(o.data)+'</span>'+
+              '</div>'+
+              '<h3 class="font-display font-semibold text-sm text-neutral-900 leading-tight truncate">'+o.produto+'</h3>'+
+              '<p class="text-xs text-neutral-500 mt-0.5">'+outroLabel+': '+o.outra+'</p>'+
+              '<div class="flex items-center justify-between mt-2">'+
+                '<span class="text-sm font-bold text-marca">'+brl(o.valor)+'</span>'+
+                '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold '+pedidos_badge[o.status]+'">'+pedidos_badgeSvg(o.status)+o.status+'</span>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>';
+      }
+      function pedidos_trocarAba(aba){
+        pedidos_tab=aba;
+        document.querySelectorAll('.aba-pedido').forEach(function(b){
+          var ativo=b.dataset.aba===aba;
+          b.className='aba-pedido flex-1 py-2 px-1 text-xs font-semibold rounded-lg transition-all duration-200 '+(ativo?'bg-white text-neutral-900 shadow-sm':'text-neutral-500');
+        });
+        pedidos_render();
+      }
+      function pedidos_render(){
+        var lista=document.getElementById('pedidos-lista');
+        var vazio=document.getElementById('pedidos-vazio');
+        var filtro=pedidos_tab==='todos'?null:pedidos_tab;
+        var dados=filtro?pedidos_dados.filter(function(d){return d.tipo===filtro;}):pedidos_dados.slice();
+        if(dados.length===0){lista.classList.add('hidden');vazio.classList.remove('hidden');vazio.classList.add('flex','flex-col','items-center');}
+        else{lista.classList.remove('hidden');vazio.classList.add('hidden');vazio.classList.remove('flex','flex-col','items-center');lista.innerHTML=dados.map(pedidos_card).join('');}
+      }
+      function pedidos_detalhe(id){
+        var o=pedidos_dados.find(function(d){return d.id===id;});
+        if(!o)return;
+        var isVendido=o.tipo==='vendido';
+        var tipoLabel=isVendido?'Venda':'Compra';
+        var outroLabel=isVendido?'Comprador':'Vendedor';
+        var acoes='';
+        if(o.status==='Concluído')acoes+='<button onclick="pedidos_acao(\''+o.id+'\',\'avaliar\')" class="flex-1 py-3 bg-marca text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">Avaliar</button>';
+        if(o.status==='Pendente')acoes+='<button onclick="pedidos_acao(\''+o.id+'\',\'cancelar\')" class="flex-1 py-3 bg-red-50 text-red-600 border border-red-200 rounded-xl font-semibold text-sm active:scale-95 transition-transform">Cancelar Pedido</button>';
+        if(o.status==='Cancelado')acoes+='<button onclick="pedidos_acao(\''+o.id+'\',\'reembolsar\')" class="flex-1 py-3 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl font-semibold text-sm active:scale-95 transition-transform">Solicitar Reembolso</button>';
+        if(o.status==='Em andamento')acoes+='<button onclick="pedidos_acao(\''+o.id+'\',\'rastrear\')" class="flex-1 py-3 bg-blue-50 text-blue-600 border border-blue-200 rounded-xl font-semibold text-sm active:scale-95 transition-transform">Rastrear</button>';
+        acoes+='<button onclick="pedidos_acao(\''+o.id+'\',\'contatar\')" class="flex-1 py-3 bg-neutral-100 text-neutral-700 rounded-xl font-semibold text-sm active:scale-95 transition-transform">Contatar '+outroLabel+'</button>';
+        var timelineHtml=o.etapas.map(function(e,i){
+          var ativo=e.ok;
+          var corAtivo=ativo?'bg-marca border-marca text-white':'bg-neutral-100 border-neutral-200 text-neutral-400';
+          var corLinha=ativo?'bg-marca':'bg-neutral-200';
+          var icone=ativo?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg>';
+          var linha=i<o.etapas.length-1?'<div class="absolute left-[15px] top-[30px] w-0.5 h-8 '+corLinha+' rounded-full"></div>':'';
+          return'<div class="flex items-start gap-3 relative">'+linha+
+            '<div class="w-8 h-8 rounded-full border-2 '+corAtivo+' flex items-center justify-center flex-shrink-0 mt-0.5">'+icone+'</div>'+
+            '<div class="pb-4">'+
+              '<p class="text-sm font-medium '+(ativo?'text-neutral-900':'text-neutral-400')+'">'+e.et+'</p>'+
+            '</div>'+
+          '</div>';
+        }).join('');
+        var html='<div class="p-5">'+
+          '<div class="flex items-center justify-between mb-5">'+
+            '<h2 class="font-display text-lg font-bold text-neutral-900">Detalhes</h2>'+
+            '<button onclick="fecharModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'+
+          '</div>'+
+          '<div class="flex items-center gap-4 mb-5">'+
+            '<div class="w-16 h-16 rounded-xl bg-gradient-to-br '+o.cor+' flex items-center justify-center flex-shrink-0"><span class="text-white font-bold text-lg">'+o.foto+'</span></div>'+
+            '<div class="flex-1 min-w-0">'+
+              '<h3 class="font-display font-semibold text-base text-neutral-900 truncate">'+o.produto+'</h3>'+
+              '<p class="text-xs text-neutral-500 mt-0.5">'+o.cat+'</p>'+
+              '<p class="text-lg font-bold text-marca mt-1">'+brl(o.valor)+'</p>'+
+            '</div>'+
+          '</div>'+
+          '<div class="bg-neutral-50 rounded-xl p-4 mb-5 space-y-2.5">'+
+            '<div class="flex justify-between text-sm"><span class="text-neutral-500">Pedido</span><span class="font-mono text-neutral-800 text-xs">'+o.id+'</span></div>'+
+            '<div class="flex justify-between text-sm"><span class="text-neutral-500">Data</span><span class="text-neutral-800 font-medium">'+dataBR(o.data)+'</span></div>'+
+            '<div class="flex justify-between text-sm"><span class="text-neutral-500">'+outroLabel+'</span><span class="text-neutral-800 font-medium">'+o.outra+'</span></div>'+
+            '<div class="flex justify-between text-sm"><span class="text-neutral-500">Tipo</span><span class="text-neutral-800 font-medium">'+tipoLabel+'</span></div>'+
+            '<div class="flex justify-between text-sm items-center"><span class="text-neutral-500">Status</span><span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold '+pedidos_badge[o.status]+'">'+pedidos_badgeSvg(o.status)+o.status+'</span></div>'+
+          '</div>'+
+          '<div class="mb-5">'+
+            '<h4 class="font-display font-semibold text-sm text-neutral-800 mb-3">Acompanhamento</h4>'+
+            '<div class="pl-1">'+timelineHtml+'</div>'+
+          '</div>'+
+          (acoes?'<div class="flex gap-2.5 pt-3 border-t border-neutral-100">'+acoes+'</div>':'')+
+        '</div>';
+        abrirModal(html,'Pedido #'+o.id.slice(-6));
+      }
+      function pedidos_acao(id,acao){
+        fecharModal();
+        setTimeout(function(){
+          var msgs={avaliar:'Avaliação enviada com sucesso!',cancelar:'Pedido cancelado.',reembolsar:'Solicitação de reembolso enviada.',rastrear:'Funcionalidade de rastreamento em breve.',contatar:'Abrindo conversa com '+((pedidos_dados.find(function(d){return d.id===id;})||{}).outra||'vendedor')+'...'};
+          toast(msgs[acao]||'Ação realizada.','ok');
+          if(acao==='cancelar'){
+            var o=pedidos_dados.find(function(d){return d.id===id;});
+            if(o){o.status='Cancelado';o.etapas.forEach(function(e){e.ok=false;});pedidos_render();}
+          }
+        },300);
+      }
+      pedidos_render();
+      </script>
+    </section>
+
     <!-- TELAS -->
       </main>
 
