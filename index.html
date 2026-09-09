@@ -840,6 +840,129 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+    <section data-tela="detalhe" class="hidden px-4 py-2 max-w-[430px] mx-auto fade-in font-body bg-marca-50 min-h-[100dvh] flex flex-col">
+  <!-- Cabeçalho do Produto -->
+  <div class="pt-1 pb-3 flex flex-col gap-1">
+    <button onclick="mostrarTela('explorar')" class="w-8 h-8 rounded-full bg-marca-100 hover:bg-marca-200 flex items-center justify-center text-marca-900 transition duration-150 active:scale-95 absolute left-4 top-2 z-10"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" width="20" height="20"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M13 16l-5-6 5-6"/></svg></button>
+    <div class="flex flex-col min-h-[44px] pl-10">
+      <h1 class="font-display text-marca-900 text-2xl font-semibold leading-tight">Violão Giannini Start Nf Acústico</h1>
+      <div class="flex items-center gap-2 mt-1 text-marca-500">
+        <span class="text-base font-medium">Instrumentos Musicais</span>
+        <span class="inline-block w-1 h-1 bg-marca-300 rounded-full"></span>
+        <span class="text-sm">Jussara/GO</span>
+      </div>
+    </div>
+  </div>
+  <!-- Carrossel de Fotos -->
+  <div class="relative w-full select-none">
+    <div id="detalhe_carrosselImgs" class="flex gap-3 transition-transform duration-300 will-change-transform overflow-x-auto snap-x snap-mandatory scroll-smooth rounded-2xl shadow ring-1 ring-marca-100 bg-gradient-to-br from-marca-50 to-marca-100 mb-3" style="scrollbar-width:none">
+      <div class="min-w-full snap-center shrink-0 flex justify-center h-52 items-center bg-gradient-to-br from-[#ffeeba] to-[#f5f3e1] relative">
+        <span class="text-[5.5rem] font-display font-bold text-marca-200 select-none">VG</span>
+        <span class="absolute left-2 top-2 text-xs bg-marca-600 text-marca-50 px-2 py-0.5 rounded badge">Principal</span>
+      </div>
+      <div class="min-w-full snap-center shrink-0 flex justify-center h-52 items-center bg-marca-100 relative">
+        <svg width="90" height="80" viewBox="0 0 90 80"><defs><linearGradient id="g1" x1="0" y1="0" x2="80" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#FFE086"/><stop offset="1" stop-color="#FAFAFA"/></linearGradient></defs><rect x="7" y="10" width="75" height="60" rx="14" fill="url(#g1)" /><circle cx="60" cy="25" r="9" fill="#D4AF37"/><rect x="25" y="35" width="40" height="18" rx="7" fill="#FAF7E1" /><rect x="39" y="43" width="18" height="7" rx="3" fill="#D4AF37" opacity=".6"/></svg>
+      </div>
+      <div class="min-w-full snap-center shrink-0 flex justify-center h-52 items-center bg-gradient-to-tl from-[#e5c97b] to-[#fffbe3] relative">
+        <span class="rounded-md bg-marca-200 text-marca-900 px-3 py-2 text-lg font-semibold">Nota fiscal inclusa</span>
+      </div>
+    </div>
+    <div id="detalhe_carrosselIndicadores" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10"></div>
+    <button type="button" class="absolute top-1/2 left-2 -translate-y-1/2 flex items-center justify-center w-9 h-9 bg-marca-900/60 rounded-full text-marca-50 transition hover:bg-marca-800 active:scale-95" onclick="detalhe_carrosselTrocar(-1)">
+      <svg width="18" height="18" fill="none" stroke="currentColor"><path d="M12 15L7 9l5-6" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button type="button" class="absolute top-1/2 right-2 -translate-y-1/2 flex items-center justify-center w-9 h-9 bg-marca-900/60 rounded-full text-marca-50 transition hover:bg-marca-800 active:scale-95" onclick="detalhe_carrosselTrocar(1)">
+      <svg width="18" height="18" fill="none" stroke="currentColor"><path d="M6 3l5 6-5 6" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <!-- Preço -->
+  <div class="mt-2 mb-3 flex items-center gap-2">
+    <span class="text-2xl font-bold text-marca-600 bg-marca-100 px-3 py-1 rounded-xl font-display shadow-sm">R$ 1.090,00</span>
+    <span class="badge badge-success flex gap-1 items-center text-xs bg-marca-200 text-marca-700">
+      <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#D4AF37"/><path d="M12 6l-4 4-2-2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Verificado
+    </span>
+  </div>
+  <!-- Vendedor -->
+  <div class="flex items-center justify-between bg-marca-100 rounded-xl px-3 py-2 mb-3 shadow card">
+    <div class="flex items-center gap-3">
+      <span class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-xl bg-gradient-to-br from-marca-300 to-marca-100 text-marca-900 border-2 border-marca-200 shadow-sm select-none">AF</span>
+      <div>
+        <div class="flex items-center gap-1">
+          <span class="font-medium text-marca-900">Ana Félix</span>
+          <span class="badge badge-outline text-xs font-sans">Membro desde 2023</span>
+        </div>
+        <div class="flex items-center gap-1 mt-0.5">
+          <span class="text-marca-500 text-sm">Jussara/GO</span>
+          <span class="inline-flex items-center ml-2">
+            <svg class="mr-1" width="16" height="16" viewBox="0 0 20 20"><defs><linearGradient id="estrela" x1="0" y1="0" x2="20" y2="20"><stop stop-color="#D4AF37"/><stop offset="1" stop-color="#C9A234"/></linearGradient></defs><path fill="url(#estrela)" d="M10 3.9l1.8 3.7 4.1.6-3 3 .7 4.1-3.6-2-3.6 2 .7-4.1-3-3 4.1-.6L10 3.9z"/></svg>
+            <span class="text-marca-700 font-medium">4.9</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <button onclick="abrirModal(`
+      <div class='flex flex-col items-center gap-4 py-3'>
+        <span class='w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl bg-gradient-to-br from-marca-400 to-marca-200 text-marca-950 border-2 border-marca-400 shadow'>AF</span>
+        <div class='text-lg font-bold font-display text-marca-900'>Ana Félix</div>
+        <div class='flex flex-col gap-1 text-sm text-marca-600'>
+          <div><b>Membro</b> desde janeiro de 2023</div>
+          <div><b>Cidade:</b> Jussara/GO</div>
+          <div class='flex items-center gap-2'><b>23</b> vendas finalizadas <svg width='15' height='15' viewBox='0 0 16 16'><circle cx='8' cy='8' r='7' fill='#C8D9A8'/><path d='M12 6l-4 4-2-2' stroke='#009900' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div>
+          <div class='flex items-center gap-2'><b>98%</b> de avaliações positivas</div>
+        </div>
+        <button onclick='fecharModal();toast(&quot;Chat aberto com Ana Félix&quot;,&quot;ok&quot;);mostrarTela(&quot;chat&quot;)' class='btn btn-primary bg-marca-900 text-marca-50 hover:bg-marca-700 mt-1 active:scale-95 transition px-5'>Conversar</button>
+      </div>
+    `,'Perfil de Ana Félix')" class="py-2 px-2 bg-marca-600 text-marca-50 rounded-full shadow hover:bg-marca-700 transition active:scale-95 font-semibold flex items-center gap-1">
+      <svg width="20" height="20" fill="none" stroke="currentColor"><circle cx="10" cy="10" r="8" stroke-width="2" /><path stroke-width="2" d="M10 13.5a4 4 0 0 0-4-4h0a4 4 0 0 1 8 0h0a4 4 0 0 0-4 4z"/></svg>
+      Ver Perfil
+    </button>
+  </div>
+  <!-- Botões principais -->
+  <div class="flex justify-between items-center mb-1 gap-2">
+    <button id="detalhe_btnFavoritar" onclick="detalhe_toggleFavorito()" class="w-12 h-12 rounded-full transition active:scale-95 border-2 border-marca-200 bg-marca-50 flex items-center justify-center shadow hover:bg-marca-100">
+      <svg id="detalhe_iconFav" width="28" height="28" fill="none" viewBox="0 0 28 28"><path d="M13.9 25c-.4 0-.7-.2-1-.5L7.2 18c-3.1-3.3-3-8 .2-10.8C9.7 4.1 13.2 5 13.9 7.4c.7-2.3 4.2-3.3 6.6-1.8 3.3 2.7 3.4 7.5.2 10.8l-5.7 6.5c-.3.3-.7.5-1 .5Z" stroke="#D4AF37" stroke-width="2" fill="none"/></svg>
+    </button>
+    <button onclick="mostrarTela('chat')" class="btn flex-1 bg-marca-900 text-marca-50 font-semibold rounded-xl shadow hover:bg-marca-800 active:scale-95 transition flex items-center justify-center gap-2 py-3 px-0 text-base">
+      <svg width="20" height="20" fill="none" viewBox="0 0 22 22"><rect x="3" y="5" width="16" height="10" rx="4" fill="#FAFAFA"/><path d="M2.5,7.5 C2.5,5.01472 4.51472,3 7,3h8c2.48528,0 4.5,2.01472 4.5,4.5v5c0,2.4853-2.0147,4.5-4.5,4.5H7C4.51472,17,2.5,14.9853,2.5,12.5Z" stroke="#D4AF37" stroke-width="1.5"/><path d="M8 9h6M8 12h3" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Conversar
+    </button>
+    <button onclick="mostrarTela('carrinho');toast('Adicionado ao carrinho','ok')" class="btn flex-1 bg-marca-600 text-marca-50 font-semibold rounded-xl shadow hover:bg-marca-700 active:scale-95 transition flex items-center justify-center gap-2 py-3 px-0 text-base">
+      <svg width="20" height="20" fill="none" viewBox="0 0 22 22"><rect x="4" y="5" width="14" height="12" rx="4" fill="#D4AF37"/><path d="M7 12h8m-4 4V8" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Comprar Agora
+    </button>
+  </div>
+  <!-- Abas Detalhe/Avaliações/FAQ -->
+  <nav class="mt-2 flex gap-1 border-b-2 border-marca-100 mb-3" aria-label="Abas produto">
+    <button onclick="detalhe_trocarAba('descricao')" id="detalhe_aba_descricao" class="detalhe_aba px-3 py-2 rounded-t-lg font-semibold text-marca-900 border-b-2 border-transparent transition duration-150 focus-visible:bg-marca-50">Descrição</button>
+    <button onclick="detalhe_trocarAba('avaliacoes')" id="detalhe_aba_avaliacoes" class="detalhe_aba px-3 py-2 rounded-t-lg font-semibold text-marca-500 border-b-2 border-transparent transition duration-150">Avaliações</button>
+    <button onclick="detalhe_trocarAba('faq')" id="detalhe_aba_faq" class="detalhe_aba px-3 py-2 rounded-t-lg font-semibold text-marca-500 border-b-2 border-transparent transition duration-150">Perguntas Frequentes</button>
+  </nav>
+  <!-- Conteúdo das Abas -->
+  <div class="relative flex-1 min-h-[140px]">
+    <!-- Descrição -->
+    <div id="detalhe_abaConteudo_descricao" class="detalhe_abaConteudo">
+      <h2 class="font-display text-lg text-marca-900 mb-1">Detalhes do Produto</h2>
+      <ul class="grid grid-cols-2 gap-x-4 gap-y-2 mb-2 text-marca-700 text-[15px]">
+        <li>Marca: <b class="text-marca-900">Giannini</b></li>
+        <li>Modelo: <b class="text-marca-900">Start Nf</b></li>
+        <li>Tipo: <b class="text-marca-900">Acústico</b></li>
+        <li>Estado: <b class="text-marca-900">Seminovo</b></li>
+        <li>Com nota fiscal</li>
+        <li>Fotos reais do produto</li>
+      </ul>
+      <p class="text-marca-700 mb-2">
+        Violão em perfeito estado, encordoamento novo, acompanha case e palhetas. Ótima sonoridade, ideal para quem está iniciando ou quer um instrumento de qualidade para cultos e eventos musicais. Vendo apenas porque adquiri outro modelo. Aceito proposta.
+      </p>
+      <div class="bg-marca-100 rounded-lg py-2 px-3 mt-2 flex gap-2 items-center text-marca-600 text-sm">
+        <svg width="22" height="22" fill="none" viewBox="0 0 20 20"><rect x="1" y="3" width="18" height="14" rx="4" fill="#D4AF37" opacity=".2"/><path d="M5 8h10M5 12h6" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Nota: Este produto pode ser testado presencialmente na Igreja Batista do Calvário (Jussara/GO) de segunda a sexta, das 14h às 18h. Tire dúvidas pelo chat antes de comprar!
+      </div>
+    </div>
+    <!-- Avaliações -->
+    <div id="detalhe_abaConteudo_avaliacoes" class="detalhe_abaConteudo hidden">
+      <div class="mb-2 flex items-center gap-2">
+        <svg width="28" height="28"><defs><linearGradient id="estrelaAva" x1="0" y1="0" x2="20" y2="20"><stop stop-color="#D4AF37"/><stop offset="1" stop-color="#F7EBB8"/></linearGradient></defs><path fill="url(#estrelaAva)" d="M14 4.5l2.4 4.8 5.3.8-3.8 3.9.9 5.5-4.8-2.8-4.8 2.8.9-5
+
     <!-- TELAS -->
       </main>
 
