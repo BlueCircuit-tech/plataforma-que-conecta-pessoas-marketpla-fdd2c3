@@ -2617,6 +2617,303 @@ document.addEventListener('DOMContentLoaded', () => {
       </script>
     </section>
 
+    <section data-tela="chat" class="hidden">
+      <div id="chat-lista-view" class="fade-in">
+        <div class="px-5 pt-2 pb-3">
+          <h1 class="font-display text-2xl font-bold text-marca-900">Mensagens</h1>
+          <p class="text-sm text-neutral-500 mt-0.5">Conecte-se com a comunidade</p>
+        </div>
+
+        <div class="px-5 mb-4">
+          <div class="relative">
+            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="chat-search" type="text" placeholder="Buscar conversa..." oninput="chat_filtrar(this.value)" class="w-full pl-10 pr-4 py-2.5 bg-white border border-neutral-200 rounded-xl text-sm font-body text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-marca-400 focus:ring-1 focus:ring-marca-400 transition-all" />
+          </div>
+        </div>
+
+        <div id="chat-lista-container" class="px-5 space-y-2 overflow-y-auto" style="max-height: calc(100vh - 220px);">
+        </div>
+
+        <div id="chat-vazio-busca" class="hidden px-5 py-16 text-center">
+          <div class="w-16 h-16 mx-auto mb-3 bg-neutral-100 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          </div>
+          <p class="text-sm text-neutral-500">Nenhuma conversa encontrada</p>
+          <p class="text-xs text-neutral-400 mt-1">Tente outro nome para buscar</p>
+        </div>
+      </div>
+
+      <div id="chat-mensagens-view" class="hidden flex flex-col h-screen">
+        <div id="chat-header" class="flex items-center gap-3 px-4 py-3 bg-white border-b border-neutral-100 shrink-0">
+          <button onclick="chat_voltarLista()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-neutral-100 active:scale-95 transition-all">
+            <svg class="w-5 h-5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <div id="chat-header-avatar" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-display font-bold text-sm shrink-0"></div>
+          <div class="flex-1 min-w-0">
+            <p id="chat-header-nome" class="font-display font-semibold text-sm text-neutral-900 truncate"></p>
+            <p id="chat-header-status" class="text-xs text-green-600">Online</p>
+          </div>
+          <button onclick="toast('Informações do contato','info')" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-neutral-100 active:scale-95 transition-all">
+            <svg class="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+          </button>
+        </div>
+
+        <div id="chat-mensagens-container" class="flex-1 overflow-y-auto px-4 py-3 space-y-3" style="background: #FAFAFA;">
+        </div>
+
+        <div id="chat-digitando" class="hidden px-4 py-2">
+          <div class="flex items-center gap-2 text-xs text-neutral-500">
+            <div class="flex gap-1">
+              <span class="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style="animation-delay:0ms"></span>
+              <span class="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style="animation-delay:150ms"></span>
+              <span class="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style="animation-delay:300ms"></span>
+            </div>
+            <span id="chat-digitando-nome">Pastor Carlos</span> está digitando...
+          </div>
+        </div>
+
+        <div class="bg-white border-t border-neutral-100 px-3 py-2.5 shrink-0">
+          <div id="chat-imagem-preview" class="hidden mb-2 relative inline-block">
+            <img id="chat-imagem-preview-img" class="h-16 w-16 object-cover rounded-lg border border-neutral-200" />
+            <button onclick="chat_removerImagem()" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="flex items-end gap-2">
+            <button onclick="document.getElementById('chat-file-input').click()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-neutral-100 active:scale-95 transition-all shrink-0">
+              <svg class="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 000 2.828 2 2 0 002.828 0L18 9.828m-3-3L18 3M3 21l3.586-3.586a2 2 0 012.828 0L21 14.172v-2.828a2 2 0 00-.586-1.414l-6.586-6.586a2 2 0 00-2.828 0L3 7.828"/></svg>
+            </button>
+            <input id="chat-file-input" type="file" accept="image/*" class="hidden" onchange="chat_selecionarImagem(event)" />
+            <div class="flex-1 relative">
+              <textarea id="chat-input" rows="1" placeholder="Escreva uma mensagem..." onkeydown="chat_tecla(event)" oninput="chat_autoRedimensionar(this)" class="w-full px-4 py-2.5 bg-neutral-100 border border-neutral-200 rounded-2xl text-sm font-body text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-marca-400 focus:bg-white focus:ring-1 focus:ring-marca-400 transition-all resize-none" style="max-height: 100px;"></textarea>
+            </div>
+            <button onclick="chat_enviarMensagem()" class="w-10 h-10 flex items-center justify-center rounded-full bg-marca-400 text-white hover:bg-marca-500 active:scale-95 transition-all shrink-0 shadow-sm">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+```
+
+```html
+    <script>
+    (function(){
+      const CORES = ['#D4AF37','#0A0A0A','#B91C1C','#1D4ED8','#059669','#7C3AED','#DB2777','#EA580C'];
+      const contatos = [
+        { id:1, nome:'Pastor Carlos', cor:CORES[0], ultima:'Que a graça do Senhor esteja com vocês! 🙏', hora:'19:42', naoLidas:2, online:true, digitando:false },
+        { id:2, nome:'Ministério Feminino', cor:CORES[2], ultima:'Maratonando com Elas - quinta às 19h30', hora:'18:15', naoLidas:0, online:false, digitando:false },
+        { id:3, nome:'Diácono João', cor:CORES[3], ultima:'Confirmado! Vou levar os microfones amanhã.', hora:'17:30', naoLidas:1, online:true, digitando:false },
+        { id:4, nome:'Equipe de Louvor', cor:CORES[4], ultima:'Lembrete: ensaio sábado às 16h', hora:'16:45', naoLidas:5, online:false, digitando:true },
+        { id:5, nome:'Irmã Ana', cor:CORES[5], ultima:'Obrigada pelas orações, já me sinto melhor!', hora:'15:20', naoLidas:0, online:true, digitando:false },
+        { id:6, nome:'Ministério Infantil', cor:CORES[6], ultima:'As crianças amaram o teatro de ontem!', hora:'14:00', naoLidas:0, online:false, digitando:false },
+        { id:7, nome:'Irmão Pedro', cor:CORES[7], ultima:'Podemos conversar sobre o estudo bíblico?', hora:'12:30', naoLidas:3, online:false, digitando:false },
+        { id:8, nome:'Encontro de Casais', cor:CORES[1], ultima:'Retiro marcado para o próximo mês!', hora:'Ontem', naoLidas:0, online:false, digitando:false },
+      ];
+      const mensagens = {
+        1: [
+          { de:true, texto:'Bom dia, pastor! Queria tirar uma dúvida sobre o batismo.', hora:'19:10' },
+          { de:false, texto:'Bom dia, filho! Claro, estou à disposição. Qual é a sua dúvida?', hora:'19:12' },
+          { de:true, texto:'Gostaria de saber se posso ser batizado mesmo ainda tendo algumas dúvidas sobre a fé.', hora:'19:15' },
+          { de:false, texto:'Essa é uma pergunta muito válida. O batismo é um passo de fé, não de conhecimento completo. Vamos conversar melhor no domingo.', hora:'19:20' },
+          { de:true, texto:'Perfeito! Te vejo no culto então. 🙏', hora:'19:22' },
+          { de:false, texto:'Que a graça do Senhor esteja com vocês! 🙏', hora:'19:42' },
+        ],
+        2: [
+          { de:false, texto:'Olá irmãs! Lembrando que amanhã temos nosso encontro Maratonando com Elas.', hora:'17:50' },
+          { de:true, texto:'Vou levar um lanche para compartilhar!', hora:'18:00' },
+          { de:false, texto:'Maratonando com Elas - quinta às 19h30', hora:'18:15' },
+        ],
+        3: [
+          { de:true, texto:'Diácono João, os microfones para o culto de domingo já estão reservados?', hora:'17:20' },
+          { de:false, texto:'Sim, já peguei na igreja e deixei na sala de som.', hora:'17:25' },
+          { de:true, texto:'Perfeito! Preciso de mais um microfone de lapela, tem disponível?', hora:'17:28' },
+          { de:false, texto:'Confirmado! Vou levar os microfones amanhã.', hora:'17:30' },
+        ],
+        4: [
+          { de:false, texto:'Pessoal, ensaio confirmado para sábado!', hora:'16:30' },
+          { de:true, texto:'Estou animada! Vou preparar os novos cânticos.', hora:'16:35' },
+          { de:false, texto:'Lembrete: ensaio sábado às 16h', hora:'16:45' },
+        ],
+        5: [
+          { de:false, texto:'Irmã, estou orando pela sua saúde!', hora:'15:10' },
+          { de:true, texto:'Obrigada pelas orações, já me sinto melhor!', hora:'15:20' },
+        ],
+        6: [
+          { de:false, texto:'Olá pais! Gostaria de compartilhar o quanto as crianças se divertiram ontem.', hora:'13:50' },
+          { de:true, texto:'Que bom! Meu filho falou o dia todo sobre a história de Davi.', hora:'14:00' },
+          { de:false, texto:'As crianças amaram o teatro de ontem!', hora:'14:00' },
+        ],
+        7: [
+          { de:false, texto:'Irmão, você pode me ajudar com o estudo de Romanos?', hora:'12:00' },
+          { de:true, texto:'Claro! Qual capítulo você quer estudar?', hora:'12:15' },
+          { de:false, texto:'Podemos conversar sobre o estudo bíblico?', hora:'12:30' },
+        ],
+        8: [
+          { de:false, texto:'O retiro de casais está confirmado! Datas: 15 a 17 de março.', hora:'10:00' },
+          { de:true, texto:'Que maravilha! Vamos confirmar presença.', hora:'10:30' },
+          { de:false, texto:'Retiro marcado para o próximo mês!', hora:'Ontem' },
+        ],
+      };
+      let contatoAtivo = null;
+      let imagemSelecionada = null;
+
+      window.chat_inicializar = function() {
+        chat_renderizarLista(contatos);
+      };
+
+      window.chat_renderizarLista = function(lista) {
+        const container = document.getElementById('chat-lista-container');
+        const vazio = document.getElementById('chat-vazio-busca');
+        if (!lista.length) { container.innerHTML = ''; vazio.classList.remove('hidden'); return; }
+        vazio.classList.add('hidden');
+        container.innerHTML = lista.map(c => {
+          const iniciais = c.nome.split(' ').filter(w=>w.length>=3).slice(0,2).map(w=>w[0]).join('').toUpperCase() || c.nome.substring(0,2).toUpperCase();
+          return `<div onclick="chat_abrirConversa(${c.id})" class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-neutral-100 cursor-pointer hover:border-marca-300 hover:shadow-md active:scale-[0.98] transition-all group">
+            <div class="relative shrink-0">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-display font-bold text-sm" style="background:${c.cor}">${iniciais}</div>
+              ${c.online ? '<span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>' : ''}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-display font-semibold text-sm text-neutral-900 truncate">${c.nome}</span>
+                <span class="text-[11px] text-neutral-400 shrink-0 ml-2">${c.hora}</span>
+              </div>
+              <div class="flex items-center justify-between mt-0.5">
+                <p class="text-xs text-neutral-500 truncate pr-2">${c.ultima}</p>
+                ${c.naoLidas > 0 ? `<span class="shrink-0 min-w-[20px] h-5 px-1.5 bg-marca-400 text-white text-[10px] font-bold rounded-full flex items-center justify-center">${c.naoLidas}</span>` : ''}
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+      };
+
+      window.chat_filtrar = function(termo) {
+        if (!termo) { chat_renderizarLista(contatos); return; }
+        const filtrados = contatos.filter(c => c.nome.toLowerCase().includes(termo.toLowerCase()));
+        chat_renderizarLista(filtrados);
+      };
+
+      window.chat_abrirConversa = function(id) {
+        const c = contatos.find(x=>x.id===id);
+        if (!c) return;
+        c.naoLidas = 0;
+        contatoAtivo = c;
+        const iniciais = c.nome.split(' ').filter(w=>w.length>=3).slice(0,2).map(w=>w[0]).join('').toUpperCase() || c.nome.substring(0,2).toUpperCase();
+        document.getElementById('chat-header-avatar').style.background = c.cor;
+        document.getElementById('chat-header-avatar').textContent = iniciais;
+        document.getElementById('chat-header-nome').textContent = c.nome;
+        document.getElementById('chat-header-status').innerHTML = c.online ? '<span class="text-green-600">Online</span>' : '<span class="text-neutral-400">Offline</span>';
+        document.getElementById('chat-lista-view').classList.add('hidden');
+        document.getElementById('chat-mensagens-view').classList.remove('hidden');
+        chat_renderizarMensagens();
+        chat_atualizarListaNaTela();
+      };
+
+      window.chat_renderizarMensagens = function() {
+        const container = document.getElementById('chat-mensagens-container');
+        const msgs = mensagens[contatoAtivo.id] || [];
+        container.innerHTML = msgs.map(m => {
+          if (m.de) {
+            return `<div class="flex justify-end"><div class="max-w-[75%] bg-marca-400 text-white px-4 py-2.5 rounded-2xl rounded-br-md shadow-sm">
+              <p class="text-sm font-body leading-relaxed">${m.texto}</p>
+              <span class="text-[10px] text-marca-100 mt-1 block text-right">${m.hora} <svg class="inline w-3 h-3 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span>
+            </div></div>`;
+          }
+          return `<div class="flex justify-start"><div class="max-w-[75%] bg-white text-neutral-800 px-4 py-2.5 rounded-2xl rounded-bl-md shadow-sm border border-neutral-100">
+            <p class="text-sm font-body leading-relaxed">${m.texto}</p>
+            <span class="text-[10px] text-neutral-400 mt-1 block text-right">${m.hora}</span>
+          </div></div>`;
+        }).join('');
+        container.scrollTop = container.scrollHeight;
+        document.getElementById('chat-digitando').classList.toggle('hidden', !contatoAtivo.digitando);
+        document.getElementById('chat-digitando-nome').textContent = contatoAtivo.nome;
+      };
+
+      window.chat_enviarMensagem = function() {
+        const input = document.getElementById('chat-input');
+        const texto = input.value.trim();
+        if (!texto && !imagemSelecionada) return;
+        const agora = new Date();
+        const horaStr = agora.getHours().toString().padStart(2,'0') + ':' + agora.getMinutes().toString().padStart(2,'0');
+        if (!mensagens[contatoAtivo.id]) mensagens[contatoAtivo.id] = [];
+        if (imagemSelecionada) {
+          mensagens[contatoAtivo.id].push({ de:true, texto:'<img src="'+imagemSelecionada+'" class="max-w-full rounded-lg mb-1" /><p>'+texto+'</p>', hora:horaStr });
+          imagemSelecionada = null;
+          document.getElementById('chat-imagem-preview').classList.add('hidden');
+          document.getElementById('chat-imagem-preview-img').src = '';
+        } else {
+          mensagens[contatoAtivo.id].push({ de:true, texto:texto, hora:horaStr });
+        }
+        input.value = '';
+        input.style.height = 'auto';
+        contatoAtivo.ultima = texto || '📷 Foto';
+        contatoAtivo.hora = horaStr;
+        chat_renderizarMensagens();
+        toast('Mensagem enviada','ok');
+        setTimeout(()=>{
+          if (!contatoAtivo) return;
+          contatoAtivo.digitando = true;
+          chat_renderizarMensagens();
+          setTimeout(()=>{
+            if (!contatoAtivo) return;
+            contatoAtivo.digitando = false;
+            const respostas = ['Amém! Que Deus abençoe 🙏','Que bom ouvir isso!','Vamos orar por você!','Glória a Deus! 🙌','Que a paz do Senhor esteja com você.'];
+            const r = respostas[Math.floor(Math.random()*respostas.length)];
+            const hr = new Date();
+            const hrStr = hr.getHours().toString().padStart(2,'0')+':'+hr.getMinutes().toString().padStart(2,'0');
+            mensagens[contatoAtivo.id].push({ de:false, texto:r, hora:hrStr });
+            contatoAtivo.ultima = r;
+            contatoAtivo.hora = hrStr;
+            chat_renderizarMensagens();
+            toast('Nova mensagem de '+contatoAtivo.nome,'info');
+          }, 2000+Math.random()*2000);
+        }, 800);
+      };
+
+      window.chat_tecla = function(e) {
+        if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); chat_enviarMensagem(); }
+      };
+
+      window.chat_autoRedimensionar = function(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+      };
+
+      window.chat_selecionarImagem = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          imagemSelecionada = ev.target.result;
+          document.getElementById('chat-imagem-preview-img').src = imagemSelecionada;
+          document.getElementById('chat-imagem-preview').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      };
+
+      window.chat_removerImagem = function() {
+        imagemSelecionada = null;
+        document.getElementById('chat-imagem-preview').classList.add('hidden');
+        document.getElementById('chat-imagem-preview-img').src = '';
+        document.getElementById('chat-file-input').value = '';
+      };
+
+      window.chat_voltarLista = function() {
+        contatoAtivo = null;
+        document.getElementById('chat-mensagens-view').classList.add('hidden');
+        document.getElementById('chat-lista-view').classList.remove('hidden');
+        chat_atualizarListaNaTela();
+      };
+
+      function chat_atualizarListaNaTela() {
+        const busca = document.getElementById('chat-search');
+        if (busca && busca.value) chat_filtrar(busca.value);
+        else chat_renderizarLista(contatos);
+      }
+    })();
+    </script>
+
     <!-- TELAS -->
       </main>
 
